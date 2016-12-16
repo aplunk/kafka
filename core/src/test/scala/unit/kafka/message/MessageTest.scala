@@ -43,7 +43,7 @@ class MessageTest extends JUnitSuite {
   def setUp(): Unit = {
     val keys = Array(null, "key".getBytes, "".getBytes)
     val vals = Array("value".getBytes, "".getBytes, null)
-    val codecs = Array(NoCompressionCodec, GZIPCompressionCodec, SnappyCompressionCodec, LZ4CompressionCodec)
+    val codecs = Array(NoCompressionCodec, GZIPCompressionCodec, SnappyCompressionCodec, LZ4CompressionCodec, ZStdCompressionCodec)
     val timestamps = Array(Message.NoTimestamp, 0L, 1L)
     val magicValues = Array(Message.MagicValue_V0, Message.MagicValue_V1)
     for(k <- keys; v <- vals; codec <- codecs; t <- timestamps; mv <- magicValues) {

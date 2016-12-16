@@ -647,6 +647,7 @@ project(':clients') {
   archivesBaseName = "kafka-clients"
 
   dependencies {
+    compile libs.zstd
     compile libs.lz4
     compile libs.snappy
     compile libs.slf4jApi

@@ -127,6 +127,7 @@ object ProducerCompressionTest {
     list.add(Array("gzip"))
     list.add(Array("snappy"))
     list.add(Array("lz4"))
+    list.add(Array("zstd"))
     list
   }
 }

@@ -188,7 +188,7 @@ object LogConfig {
     " leader as a last resort, even though doing so may result in data loss"
   val MinInSyncReplicasDoc = KafkaConfig.MinInSyncReplicasDoc
   val CompressionTypeDoc = "Specify the final compression type for a given topic. This configuration accepts the " +
-    "standard compression codecs ('gzip', 'snappy', lz4). It additionally accepts 'uncompressed' which is equivalent to " +
+    "standard compression codecs ('gzip', 'snappy', 'lz4', 'zstd'). It additionally accepts 'uncompressed' which is equivalent to " +
     "no compression; and 'producer' which means retain the original compression codec set by the producer."
   val PreAllocateEnableDoc ="Should pre allocate file when create new segment?"
   val MessageFormatVersionDoc = KafkaConfig.LogMessageFormatVersionDoc

@@ -100,6 +100,28 @@ public enum CompressionType {
                 throw new KafkaException(e);
             }
         }
+    },
+
+    ZSTD(4, "zstd", 0.5f) {
+        @Override
+        public OutputStream wrapForOutput(ByteBufferOutputStream buffer, byte messageVersion, int bufferSize) {
+            try {
+                return (OutputStream) ZSTD_OUTPUT_STREAM_SUPPLIER.get().newInstance(buffer,
+                    messageVersion == Record.MAGIC_VALUE_V0);
+            } catch (Exception e) {
+                throw new KafkaException(e);
+            }
+        }
+
+        @Override
+        public InputStream wrapForInput(ByteBufferInputStream buffer, byte messageVersion) {
+            try {
+                return (InputStream) ZSTD_INPUT_STREAM_SUPPLIER.get().newInstance(buffer,
+                    messageVersion == Record.MAGIC_VALUE_V0);
+            } catch (Exception e) {
+                throw new KafkaException(e);
+            }
+        }
     };
 
     public final int id;
@@ -126,6 +148,8 @@ public enum CompressionType {
                 return SNAPPY;
             case 3:
                 return LZ4;
+            case 4:
+                return ZSTD;
             default:
                 throw new IllegalArgumentException("Unknown compression type id: " + id);
         }
@@ -140,6 +164,8 @@ public enum CompressionType {
             return SNAPPY;
         else if (LZ4.name.equals(name))
             return LZ4;
+        else if (ZSTD.name.equals(name))
+            return ZSTD;
         else
             throw new IllegalArgumentException("Unknown compression name: " + name);
     }
@@ -162,6 +188,14 @@ public enum CompressionType {
         }
     });
 
+    private static MemoizingConstructorSupplier ZSTD_OUTPUT_STREAM_SUPPLIER = new MemoizingConstructorSupplier(new ConstructorSupplier() {
+        @Override
+        public Constructor get() throws ClassNotFoundException, NoSuchMethodException {
+            return Class.forName("com.github.luben.zstd.ZstdOutputStream")
+                .getConstructor(OutputStream.class, Integer.TYPE);
+        }
+    });
+
     private static final MemoizingConstructorSupplier SNAPPY_INPUT_STREAM_SUPPLIER = new MemoizingConstructorSupplier(new ConstructorSupplier() {
         @Override
         public Constructor get() throws ClassNotFoundException, NoSuchMethodException {
@@ -175,6 +209,14 @@ public enum CompressionType {
         public Constructor get() throws ClassNotFoundException, NoSuchMethodException {
             return Class.forName("org.apache.kafka.common.record.KafkaLZ4BlockInputStream")
                     .getConstructor(InputStream.class, Boolean.TYPE);
+        }
+    });
+
+    private static MemoizingConstructorSupplier ZSTD_INPUT_STREAM_SUPPLIER = new MemoizingConstructorSupplier(new ConstructorSupplier() {
+        @Override
+        public Constructor get() throws ClassNotFoundException, NoSuchMethodException {
+            return Class.forName("com.github.luben.zstd.ZstdInputStream")
+                .getConstructor(InputStream.class);
         }
     });
 

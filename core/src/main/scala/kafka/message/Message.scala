@@ -116,6 +116,7 @@ object Message {
  *      1 : gzip
  *      2 : snappy
  *      3 : lz4
+ *      4 : zstd
  *    bit 3 : Timestamp type
  *      0 : create time
  *      1 : log append time
